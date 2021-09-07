@@ -1,26 +1,27 @@
-﻿using System;
+﻿using SecurityDriven.Inferno;
+using SecurityDriven.Inferno.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
+using static SecurityDriven.Inferno.Utils;
 
 namespace iTransitionTask3
     {
     class Game
         {
-        List<Move> Moves;
-        Move ComputerAnswer;
-
+        List<Turn> Turns;
+        Turn ComputerTurn;
 
         public void PlayGame(string[] args)
             {
-            List<Move> moves = new List<Move>();
+            List<Turn> turns = new List<Turn>();
             int actionCode = 1;
             foreach (string i in args)
                 {
-                Move move = new Move(i, actionCode);
-                moves.Add(move);
-                if (actionCode != 3)
+                Turn turn = new Turn(i, actionCode);
+                turns.Add(turn);
+                if (actionCode < 3)
                     {
                     actionCode++;
                     }
@@ -29,47 +30,50 @@ namespace iTransitionTask3
                     actionCode = 1;
                     }
                 }
-
-            Moves = moves;
-            ComputerAnswer = GetComputerAnswer(Moves);
-            ComputerAnswer.SetKey(Coder.GetNewKey());
-            string key = Coder.ByteDecoder(ComputerAnswer.GetKey());
-            string HMAC = Coder.GetHMAC(key);
-
-
-            //перенести в меню
-            Console.WriteLine(key);
-
-
-            Menu.ShowMenu(Moves);
-            Move playerAnswer = moves.ElementAt(Menu.GetAnswer() - 1);
-            string gameResult = CalculateGameResult(playerAnswer, ComputerAnswer);
-            Menu.ShowGameResult(gameResult);
+            Turns = turns;
+            ComputerTurn = GetComputerAnswer(Turns);
+            HMAC hmac = TurnHMAC.Get(ComputerTurn.GetTurnCode());
+            string hash = hmac.ComputeHash(SafeUTF8.GetBytes(ComputerTurn.GetTurnCode())).ToBase16();
+            Console.WriteLine(hash);
+            ShowMenu(turns);
+            Turn playerTurn = turns.ElementAt(GetAnswer() - 1);
+            ShowGameResult(GameResult.Calculate(playerTurn, ComputerTurn));
+            Console.WriteLine(hmac.Key.ToBase16());
             Console.ReadLine();
             }
 
-        string CalculateGameResult(Move playerAnswer, Move computerAnswer)
+
+
+        private Turn GetComputerAnswer(List<Turn> turns)
             {
-            if (playerAnswer.GetActionCode() == computerAnswer.GetActionCode())
-                {
-                return "DROW";
-                }
-            else if (computerAnswer.GetActionCode() == 1 && playerAnswer.GetActionCode() == 2 ||
-                computerAnswer.GetActionCode() == 2 && playerAnswer.GetActionCode() == 3 ||
-                computerAnswer.GetActionCode() == 3 && playerAnswer.GetActionCode() == 1
-                )
-                {
-                return "WIN";
-                }
-            return "LOSE";
-            }
-        
-        Move GetComputerAnswer(List<Move> moves)
-            {
-            Random random = new Random();
-            Move computerAnswer = moves.ElementAt(random.Next(0, moves.Count()));
+            CryptoRandom random = new CryptoRandom();
+            int turnId = random.Next(0, turns.Count());
+            Turn computerAnswer = turns.ElementAt(turnId);
+            computerAnswer.SetTurnCode(turnId.ToString());
             return computerAnswer;
             }
 
+        private static void ShowMenu(List<Turn> turns)
+            {
+            int i = 1;
+            Console.WriteLine("Avaible moves:");
+            foreach (Turn turn in turns)
+                {
+                Console.WriteLine($"{i} - {turn.GetName()}");
+                i++;
+                }
+            Console.WriteLine("0 - exit");
+            Console.WriteLine("? - help");
+            }
+
+        private static int GetAnswer()
+            {
+            return Convert.ToInt32(Console.ReadLine());
+            }
+
+        private static void ShowGameResult(string gameResult)
+            {
+            Console.WriteLine($"You are {gameResult}");
+            }
         }
     }

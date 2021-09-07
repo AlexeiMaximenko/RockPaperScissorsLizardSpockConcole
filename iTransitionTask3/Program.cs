@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace iTransitionTask3
     {
@@ -25,5 +21,6 @@ namespace iTransitionTask3
             game.PlayGame(arg);
             Environment.Exit(0);
             }
+
         }
     }
