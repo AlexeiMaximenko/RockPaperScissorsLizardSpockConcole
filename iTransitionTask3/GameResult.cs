@@ -4,13 +4,13 @@
         {
         public static string Calculate(Turn playerAnswer, Turn computerAnswer)
             {
-            if (playerAnswer.GetActionCode() == computerAnswer.GetActionCode())
+            if (playerAnswer.ActionCode == computerAnswer.ActionCode)
                 {
                 return "DROW";
                 }
-            else if (computerAnswer.GetActionCode() == 1 && playerAnswer.GetActionCode() == 2 ||
-                computerAnswer.GetActionCode() == 2 && playerAnswer.GetActionCode() == 3 ||
-                computerAnswer.GetActionCode() == 3 && playerAnswer.GetActionCode() == 1
+            else if (computerAnswer.ActionCode == 1 && playerAnswer.ActionCode == 2 ||
+                computerAnswer.ActionCode == 2 && playerAnswer.ActionCode == 3 ||
+                computerAnswer.ActionCode == 3 && playerAnswer.ActionCode == 1
                 )
                 {
                 return "WIN";

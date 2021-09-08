@@ -31,9 +31,10 @@ namespace iTransitionTask3
                     }
                 }
             Turns = turns;
+            //Help.Table(Turns);
             ComputerTurn = GetComputerAnswer(Turns);
-            HMAC hmac = TurnHMAC.Get(ComputerTurn.GetTurnCode());
-            string hash = hmac.ComputeHash(SafeUTF8.GetBytes(ComputerTurn.GetTurnCode())).ToBase16();
+            HMAC hmac = TurnHMAC.Get(ComputerTurn.TurnId);
+            string hash = hmac.ComputeHash(SafeUTF8.GetBytes(ComputerTurn.TurnId)).ToBase16();
             Console.WriteLine(hash);
             ShowMenu(turns);
             Turn playerTurn = turns.ElementAt(GetAnswer() - 1);
@@ -42,14 +43,12 @@ namespace iTransitionTask3
             Console.ReadLine();
             }
 
-
-
         private Turn GetComputerAnswer(List<Turn> turns)
             {
             CryptoRandom random = new CryptoRandom();
             int turnId = random.Next(0, turns.Count());
             Turn computerAnswer = turns.ElementAt(turnId);
-            computerAnswer.SetTurnCode(turnId.ToString());
+            computerAnswer.TurnId = (turnId.ToString());
             return computerAnswer;
             }
 
@@ -59,7 +58,7 @@ namespace iTransitionTask3
             Console.WriteLine("Avaible moves:");
             foreach (Turn turn in turns)
                 {
-                Console.WriteLine($"{i} - {turn.GetName()}");
+                Console.WriteLine($"{i} - {turn.Name}");
                 i++;
                 }
             Console.WriteLine("0 - exit");

@@ -14,9 +14,6 @@ namespace iTransitionTask3
             arg[4] = "Spock";
 
 
-
-
-
             Game game = new Game();
             game.PlayGame(arg);
             Environment.Exit(0);
