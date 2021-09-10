@@ -4,41 +4,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using static SecurityDriven.Inferno.Utils;
 
 namespace iTransitionTask3
     {
     class Game
         {
-        List<Turn> Turns;
         Turn ComputerTurn;
 
         public void PlayGame(string[] args)
             {
             List<Turn> turns = new List<Turn>();
-            int actionCode = 1;
-            foreach (string i in args)
+            foreach (string arg in args)
                 {
-                Turn turn = new Turn(i, actionCode);
-                turns.Add(turn);
-                if (actionCode < 3)
-                    {
-                    actionCode++;
-                    }
-                else
-                    {
-                    actionCode = 1;
-                    }
+                Turn newTurn = new Turn();
+                newTurn.Name = arg;
+                turns.Add(newTurn);
                 }
-            Turns = turns;
-            //Help.Table(Turns);
-            ComputerTurn = GetComputerAnswer(Turns);
-            HMAC hmac = TurnHMAC.Get(ComputerTurn.TurnId);
-            string hash = hmac.ComputeHash(SafeUTF8.GetBytes(ComputerTurn.TurnId)).ToBase16();
-            Console.WriteLine(hash);
+
+            Help.Table(turns);
+            ComputerTurn = GetComputerAnswer(turns);
+            HMACSHA256 hmac = TurnHMAC.Get(ComputerTurn.Name);
+            Console.WriteLine(hmac.Hash.ToBase16());
             ShowMenu(turns);
             Turn playerTurn = turns.ElementAt(GetAnswer() - 1);
-            ShowGameResult(GameResult.Calculate(playerTurn, ComputerTurn));
+            Console.WriteLine($"Computer turn: {ComputerTurn.Name}");
+            ShowGameResult(GameResult.Calculate(playerTurn, ComputerTurn, turns));
             Console.WriteLine(hmac.Key.ToBase16());
             Console.ReadLine();
             }
@@ -46,9 +36,8 @@ namespace iTransitionTask3
         private Turn GetComputerAnswer(List<Turn> turns)
             {
             CryptoRandom random = new CryptoRandom();
-            int turnId = random.Next(0, turns.Count());
+            int turnId = random.Next(0, turns.Count() - 1);
             Turn computerAnswer = turns.ElementAt(turnId);
-            computerAnswer.TurnId = (turnId.ToString());
             return computerAnswer;
             }
 

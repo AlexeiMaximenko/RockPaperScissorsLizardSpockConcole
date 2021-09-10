@@ -1,17 +1,18 @@
-﻿namespace iTransitionTask3
+﻿using System.Collections.Generic;
+
+namespace iTransitionTask3
     {
     class GameResult
         {
-        public static string Calculate(Turn playerAnswer, Turn computerAnswer)
+        public static string Calculate(Turn playerAnswer, Turn computerAnswer, List<Turn> turns)
             {
-            if (playerAnswer.ActionCode == computerAnswer.ActionCode)
+            int calculate = ((turns.Count + (turns.IndexOf(playerAnswer) + 1) - (turns.IndexOf(computerAnswer) + 1)) % turns.Count) % 2;
+
+            if (calculate == 0)
                 {
                 return "DROW";
                 }
-            else if (computerAnswer.ActionCode == 1 && playerAnswer.ActionCode == 2 ||
-                computerAnswer.ActionCode == 2 && playerAnswer.ActionCode == 3 ||
-                computerAnswer.ActionCode == 3 && playerAnswer.ActionCode == 1
-                )
+            else if (calculate % 2 == 1)
                 {
                 return "WIN";
                 }
