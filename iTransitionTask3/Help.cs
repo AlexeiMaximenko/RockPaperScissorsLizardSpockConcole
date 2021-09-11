@@ -18,7 +18,6 @@ namespace iTransitionTask3
                     }
                 table.AddRow(row);
                 }
-            
             table.Write(Format.Alternative);
             }
         }

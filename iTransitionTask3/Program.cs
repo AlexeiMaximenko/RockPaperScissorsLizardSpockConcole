@@ -32,7 +32,6 @@ namespace iTransitionTask3
         static void FindError(string errorNotation)
             {
             Console.WriteLine(errorNotation);
-            Console.ReadLine();
             Environment.Exit(0);
             }
         }
