@@ -57,7 +57,7 @@ namespace iTransitionTask3
         private static int GetPlayerAnswer(List<Turn> turns)
             {
             string input = Console.ReadLine();
-            
+
             var defense = int.TryParse(input, out int correctAnswer);
             if (defense == true && correctAnswer >= 1 && correctAnswer <= turns.Count)
                 {
@@ -67,7 +67,11 @@ namespace iTransitionTask3
                 {
                 while (defense == false || correctAnswer < 1 || correctAnswer > turns.Count)
                     {
-                    if (input == "?")
+                    if(input == "0")
+                        {
+                        Environment.Exit(0);
+                        }
+                    else if (input == "?")
                         {
                         Help.ShowTable(turns);
                         ShowMenu(turns);
