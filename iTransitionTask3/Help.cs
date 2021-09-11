@@ -1,25 +1,25 @@
 ﻿using ConsoleTables;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace iTransitionTask3
     {
     class Help
         {
-        public static void ShowTable(List<Turn> turns)
+        public static void ShowTable(string[] arg)
             {
-            var table = new ConsoleTable("1");
-
-            //foreach (Turn turn in turns)
-            //    {
-            //    table.Columns.Add(turn.Name);
-            //    }
-            //var rows = Enumerable.Repeat(turns, turns.Count());
-            //table.AddRow(rows);
-            //ConsoleTable
-            //    .From(rows)
-            //    .Configure(o => o.NumberAlignment = Alignment.Right)
-            //    .Write();
+            var table = new ConsoleTable("Pc/User");
+            table.AddColumn(arg);
+            for (int j = 0; j < arg.Length; j++)
+                {
+                string[] row = new string[arg.Length + 1];
+                row[0] = arg[j];
+                for (int i = 0; i < arg.Length; i++)
+                    {
+                    row[i + 1] = GameResult.Calculate(i, j, arg.Length);
+                    }
+                table.AddRow(row);
+                }
+            
+            table.Write(Format.Alternative);
             }
         }
     }

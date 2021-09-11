@@ -21,12 +21,11 @@ namespace iTransitionTask3
                 turns.Add(newTurn);
                 }
 
-            Help.ShowTable(turns);
             ComputerTurn = GetComputerAnswer(turns);
             HMACSHA256 hmac = TurnHMAC.Get(ComputerTurn.Name);
             Console.WriteLine(hmac.Hash.ToBase16());
             ShowMenu(turns);
-            Turn playerTurn = turns.ElementAt(GetPlayerAnswer(turns) - 1);
+            Turn playerTurn = turns.ElementAt(GetPlayerAnswer(turns, args) - 1);
             Console.WriteLine($"Computer turn: {ComputerTurn.Name}");
             Console.WriteLine(GameResult.Calculate(playerTurn, ComputerTurn, turns));
             Console.WriteLine(hmac.Key.ToBase16());
@@ -54,7 +53,7 @@ namespace iTransitionTask3
             Console.WriteLine("? - help");
             }
 
-        private static int GetPlayerAnswer(List<Turn> turns)
+        private static int GetPlayerAnswer(List<Turn> turns, string[] args)
             {
             string input = Console.ReadLine();
 
@@ -67,15 +66,16 @@ namespace iTransitionTask3
                 {
                 while (defense == false || correctAnswer < 1 || correctAnswer > turns.Count)
                     {
-                    if(input == "0")
+                    if (input == "0")
                         {
                         Environment.Exit(0);
                         }
                     else if (input == "?")
                         {
-                        Help.ShowTable(turns);
+                        Help.ShowTable(args);
                         ShowMenu(turns);
                         input = Console.ReadLine();
+                        defense = int.TryParse(input, out correctAnswer);
                         continue;
                         }
                     else
