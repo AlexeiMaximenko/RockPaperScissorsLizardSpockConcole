@@ -14,10 +14,10 @@ namespace iTransitionTask3
         public void PlayGame(string[] args)
             {
             List<Turn> turns = new List<Turn>();
-            foreach (string arg in args)
+            for (int i = 0; i < args.Length; i++)
                 {
                 Turn newTurn = new Turn();
-                newTurn.Name = arg;
+                newTurn.Name = args[i];
                 turns.Add(newTurn);
                 }
 

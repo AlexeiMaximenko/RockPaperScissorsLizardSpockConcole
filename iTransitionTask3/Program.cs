@@ -14,7 +14,8 @@ namespace iTransitionTask3
                 {
                 FindError("Argements count should be more or equal 3");
                 }
-            string[] sortedArgs = args;
+            string[] sortedArgs = new string[args.Length];
+            Array.Copy(args, sortedArgs, args.Length);
             Array.Sort(sortedArgs);
             for (int i = 0; i < sortedArgs.Length - 1; i++)
                 {
