@@ -21,12 +21,12 @@ namespace iTransitionTask3
                 turns.Add(newTurn);
                 }
 
-            Help.Table(turns);
+            Help.ShowTable(turns);
             ComputerTurn = GetComputerAnswer(turns);
             HMACSHA256 hmac = TurnHMAC.Get(ComputerTurn.Name);
             Console.WriteLine(hmac.Hash.ToBase16());
             ShowMenu(turns);
-            Turn playerTurn = turns.ElementAt(GetPlayerAnswer() - 1);
+            Turn playerTurn = turns.ElementAt(GetPlayerAnswer(turns) - 1);
             Console.WriteLine($"Computer turn: {ComputerTurn.Name}");
             Console.WriteLine(GameResult.Calculate(playerTurn, ComputerTurn, turns));
             Console.WriteLine(hmac.Key.ToBase16());
@@ -54,9 +54,36 @@ namespace iTransitionTask3
             Console.WriteLine("? - help");
             }
 
-        private static int GetPlayerAnswer()
+        private static int GetPlayerAnswer(List<Turn> turns)
             {
-            return Convert.ToInt32(Console.ReadLine());
+            string input = Console.ReadLine();
+            
+            var defense = int.TryParse(input, out int correctAnswer);
+            if (defense == true && correctAnswer >= 1 && correctAnswer <= turns.Count)
+                {
+                return correctAnswer;
+                }
+            else
+                {
+                while (defense == false || correctAnswer < 1 || correctAnswer > turns.Count)
+                    {
+                    if (input == "?")
+                        {
+                        Help.ShowTable(turns);
+                        ShowMenu(turns);
+                        input = Console.ReadLine();
+                        continue;
+                        }
+                    else
+                        {
+                        Console.WriteLine("Wrong input");
+                        Console.Write("Try again: ");
+                        input = Console.ReadLine();
+                        defense = int.TryParse(input, out correctAnswer);
+                        }
+                    }
+                }
+            return correctAnswer;
             }
         }
     }

@@ -6,7 +6,7 @@ namespace iTransitionTask3
     {
     class Help
         {
-        public static void Table(List<Turn> turns)
+        public static void ShowTable(List<Turn> turns)
             {
             var table = new ConsoleTable("1");
 
